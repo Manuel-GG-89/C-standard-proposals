@@ -22,15 +22,17 @@ void cleanup_result(Result* res) {
     }
 }
 
-// Define the macro CLEANUP_RESULT
-#define RESULT_AUTO_CLEANED(value) __attribute__((cleanup(cleanup_result))) Result value
-
 // Cleaning function to release memory assigned to the structure pointer results
 void cleanup(void* ptr) {
     if (*(void**)ptr != NULL) {
         free(*(void**)ptr);
     }
 }
+
+// Define the macro CLEANUP_RESULT
+#define RESULT_AUTO_CLEANED(value) __attribute__((cleanup(cleanup_result))) Result value
+
+
 
 Result secure_division(int numerator, int denominator) {
     if (denominator == 0) {
@@ -66,12 +68,12 @@ Result getline_stdin() {
             buffer = new_buffer;
         }
     }
-    // Manejar el caso de EOF sin entrada
+    // Handle the case of EOF without entry
     if (pos == 0 && c == EOF) {
         free(buffer);
         return ERR_RESULT("Error al leer la entrada");
     }
-    buffer[pos] = '\0'; // Terminar la cadena con '\0'
+    buffer[pos] = '\0'; // Finish the chain with '\ 0'
     return OK_RESULT(buffer);
 }
 
@@ -79,10 +81,6 @@ Result answer_user_input(const char* question) {
     printf("%s", question);
     return getline_stdin();
 }
-
-
-
-
 
 
 Result say_hello(const char* name) {
@@ -179,6 +177,7 @@ int main() {
             printf("Error: %s\n", answer.error);
             break;
         }
+        
     }
 
 
