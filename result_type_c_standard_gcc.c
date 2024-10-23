@@ -46,7 +46,7 @@ Result secure_division(int numerator, int denominator) {
     return OK_RESULT(result);
 }
 
-
+// Function to read the user's input safely
 Result getline_stdin() {
     size_t size = 128; // Initial buffer size
     size_t pos = 0;    // Current position in the buffer
@@ -77,12 +77,13 @@ Result getline_stdin() {
     return OK_RESULT(buffer);
 }
 
+// Function to ask the user a question and read the answer safely
 Result answer_user_input(const char* question) {
     printf("%s", question);
     return getline_stdin();
 }
 
-
+// Function to say hello to a person
 Result say_hello(const char* name) {
     size_t len = strlen("hello ") + strlen(name) + strlen(" ! ") + 1;
     char* greeting = malloc(len);
@@ -95,15 +96,12 @@ Result say_hello(const char* name) {
 
 
 
-
-
-
 int main() {
-
+    
+    //  Variable to store the result value
     int resultValue = 0;
+    // Use of the result value outside the IF and Switch
     RESULT_AUTO_CLEANED(result) = secure_division(10, 2);
-    
-    
     // handle the result with an IF
     if (result.type == OK) {
         int value = *(int*)result.value;
@@ -132,7 +130,9 @@ int main() {
         printf("Result: %d\n", resultValue);
     }
 
+    // Variable to store the result value
     char* result2Value = NULL;
+    // Use of the result value outside the IF and Switch
     RESULT_AUTO_CLEANED(result2) = say_hello("Manuel");
 
     // handle the result with an IF
@@ -177,12 +177,13 @@ int main() {
             printf("Error: %s\n", answer.error);
             break;
         }
-        
+
     }
 
 
 
     /*
+
         The use of the macro RESULT_AUTO_CLEANED is proposed to facilitate,   
         when leaving the Main function, the variables declared with 
         the macro RESULT_AUTO_CLEANED are automatically cleaned.
@@ -194,11 +195,12 @@ int main() {
         declared with the Macro RESULT_AUTO_CLEANED, they are cleaned 
         automatically.
 
-        Ademas, se propone un metodo para manejar inputs seguros del usuario
-        utilizando la funcion getline_stdin, la cual se encarga de leer la
-        entrada del usuario de manera segura y manejar los errores de memoria
-        que puedan surgir durante la ejecucion de la funcion.
+        In addition, a method to handle inputs insurance user is proposed
+        using the function getline_stdin, which is responsible for reading the
+        User entry safely and handle memory errors
+        that may arise during the execution of the function.
 
     */
+
     return 0;
 }
