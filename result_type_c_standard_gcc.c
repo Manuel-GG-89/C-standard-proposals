@@ -195,6 +195,20 @@ int main() {
 
     }
 
+    RESULT_AUTO_CLEANED(hello_dev) = say_hello_to_dev();
+
+    switch (hello_dev.type) {
+        case OK: {
+            char* greeting = (char*)hello_dev.value;
+            printf("Result: %s\n", greeting);
+            break;
+        }
+        case ERR: {
+            printf("Error: %s\n", hello_dev.error);
+            break;
+        }
+    }
+
 
 
     /*
