@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+// Define the structure Result
 typedef struct {
     int type;
     union {
@@ -10,8 +11,11 @@ typedef struct {
     };
 } Result;
 
+// Define the constants OK and ERR
 #define OK 0
 #define ERR 1
+
+// Define the macros OK_RESULT and ERR_RESULT
 #define OK_RESULT(val) (Result){ .type = OK, .value = (void*)(val) }
 #define ERR_RESULT(msg) (Result){ .type = ERR, .error = msg }
 
@@ -31,20 +35,6 @@ void cleanup(void* ptr) {
 
 // Define the macro CLEANUP_RESULT
 #define RESULT_AUTO_CLEANED(value) __attribute__((cleanup(cleanup_result))) Result value
-
-
-
-Result secure_division(int numerator, int denominator) {
-    if (denominator == 0) {
-        return ERR_RESULT("Division by zero error");
-    }
-    int* result = malloc(sizeof(int));
-    if (result == NULL) {
-        return ERR_RESULT("Memory allocation error");
-    }
-    *result = numerator / denominator;
-    return OK_RESULT(result);
-}
 
 // Function to read the user's input safely
 Result getline_stdin() {
@@ -77,13 +67,7 @@ Result getline_stdin() {
     return OK_RESULT(buffer);
 }
 
-// Function to ask the user a question and read the answer safely
-Result answer_user_input(const char* question) {
-    printf("%s", question);
-    return getline_stdin();
-}
-
-// Function to say hello to a person
+// Function to say hello to the user
 Result say_hello(const char* name) {
     size_t len = strlen("hello ") + strlen(name) + strlen(" ! ") + 1;
     char* greeting = malloc(len);
@@ -94,6 +78,37 @@ Result say_hello(const char* name) {
     return OK_RESULT(greeting);
 }
 
+// Function to ask the user a question and read the answer safely
+Result answer_user_input(const char* question) {
+    printf("%s", question);
+    return getline_stdin();
+}
+
+// Function to say hello to the developer
+Result say_hello_to_dev() {
+    RESULT_AUTO_CLEANED(name) = answer_user_input("What is your name, bro? it's just a test: "); 
+    switch (name.type) {
+        case OK:
+            return say_hello((char*)name.value);
+            break;
+        case ERR:
+            printf("Error: %s\n", name.error);
+            break;
+    }
+    return ERR_RESULT(name.error);
+}
+
+Result secure_division(int numerator, int denominator) {
+    if (denominator == 0) {
+        return ERR_RESULT("Division by zero error");
+    }
+    int* result = malloc(sizeof(int));
+    if (result == NULL) {
+        return ERR_RESULT("Memory allocation error");
+    }
+    *result = numerator / denominator;
+    return OK_RESULT(result);
+}
 
 
 int main() {
