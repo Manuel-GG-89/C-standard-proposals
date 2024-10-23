@@ -4,9 +4,11 @@ This is a proposal to implement the type result in the language C standard, whos
 
 The main characteristic is that when using this type, the result is automatically released from the memory when leaving the context of the function where an instance is believed.
 
-If used directly in the Main function, the result (result) will be released at the end of the program, but if used within another function, the result will be released when leaving the context of said function.
+If used directly in the Main function, the result (Result type) will be released at the end of the program, but if used within another function, the result will be released when leaving the context of said function.
 
 The implementation is made by a simple combination of macros, in addition to using the predefined macro __attribute__ available by the GCC and CLANG compiler.
+
+Additionally, a safe method is proposed to ask the user questions through the console, and that the answers entered are safely managed.There are already libraries that perform this task, but the idea of ​​this proposal is to be implemented only with the Standard Library of C.
 
 Consider that I do not have much experience in C language, but in other languages, on which I based to try a clean implementation of this characteristic.In addition, I leaned with Copilot, who usually used it as a guide of references and errors explanations (... do not expect Copilot to give them an accurate response in the first instruction, in the end, you must reach the final solution for yourself by yourself, and that requires more than a couple of instructions in the prompt).
 

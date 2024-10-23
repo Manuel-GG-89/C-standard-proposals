@@ -44,6 +44,47 @@ Result secure_division(int numerator, int denominator) {
     return OK_RESULT(result);
 }
 
+
+Result getline_stdin() {
+    size_t size = 128; // Initial buffer size
+    size_t pos = 0;    // Current position in the buffer
+    char *buffer = malloc(size);
+    if (buffer == NULL) {
+        return ERR_RESULT("Memory allocation error");
+    }
+    int c;
+    while ((c = fgetc(stdin)) != EOF && c != '\n') {
+        buffer[pos++] = (char)c;
+        // If we reach the size of the buffer, we expand it
+        if (pos >= size) {
+            size *= 2;
+            char *new_buffer = realloc(buffer, size);
+            if (new_buffer == NULL) {
+                free(buffer);
+                return ERR_RESULT("Error de reasignación de memoria");
+            }
+            buffer = new_buffer;
+        }
+    }
+    // Manejar el caso de EOF sin entrada
+    if (pos == 0 && c == EOF) {
+        free(buffer);
+        return ERR_RESULT("Error al leer la entrada");
+    }
+    buffer[pos] = '\0'; // Terminar la cadena con '\0'
+    return OK_RESULT(buffer);
+}
+
+Result answer_user_input(const char* question) {
+    printf("%s", question);
+    return getline_stdin();
+}
+
+
+
+
+
+
 Result say_hello(const char* name) {
     size_t len = strlen("hello ") + strlen(name) + strlen(" ! ") + 1;
     char* greeting = malloc(len);
@@ -54,10 +95,18 @@ Result say_hello(const char* name) {
     return OK_RESULT(greeting);
 }
 
+
+
+
+
+
 int main() {
 
     int resultValue = 0;
     RESULT_AUTO_CLEANED(result) = secure_division(10, 2);
+    
+    
+    // handle the result with an IF
     if (result.type == OK) {
         int value = *(int*)result.value;
         resultValue = value;
@@ -66,6 +115,7 @@ int main() {
         printf("Error: %s\n", result.error);
     }
 
+    // handle the result with a Switch
     switch (result.type) {
         case OK: {
             int value = *(int*)result.value;
@@ -86,6 +136,8 @@ int main() {
 
     char* result2Value = NULL;
     RESULT_AUTO_CLEANED(result2) = say_hello("Manuel");
+
+    // handle the result with an IF
     if (result2.type == OK) {
         char* greeting = (char*)result2.value;
         result2Value = greeting;
@@ -94,6 +146,7 @@ int main() {
         printf("Error: %s\n", result2.error);
     }
 
+    // handle the result with a Switch
     switch (result2.type) {
         case OK: {
             char* greeting = (char*)result2.value;
@@ -112,15 +165,40 @@ int main() {
         printf("Result: %s\n", result2Value);
     }
 
+    // Using a safe input function to get the user's name
+    RESULT_AUTO_CLEANED(answer) = answer_user_input("What is your name? ");
+    
+    // handle the result with a Switch
+    switch (answer.type) {
+        case OK: {
+            char* name = (char*)answer.value;
+            printf("Your name is: %s\n", name);
+            break;
+        }
+        case ERR: {
+            printf("Error: %s\n", answer.error);
+            break;
+        }
+    }
+
+
+
     /*
-        When leaving the Main function, the variables
-        declared with the Macro result_auto_Cleaned are automatically cleaned.
+        The use of the macro RESULT_AUTO_CLEANED is proposed to facilitate,   
+        when leaving the Main function, the variables declared with 
+        the macro RESULT_AUTO_CLEANED are automatically cleaned.
         Therefore, it is not necessary to call the Cleanup_Result
         to release the memory assigned to the leaders of the result.
         
-        The same behavior would happen if variables are declared within other functions,
-        That is, when leaving the function, the variables declared with the Macro result_Auto_Cleaned
-        They are cleaned automatically.
+        The same behavior would happen if variables are declared within 
+        other functions,that is, when leaving the function, the variables 
+        declared with the Macro RESULT_AUTO_CLEANED, they are cleaned 
+        automatically.
+
+        Ademas, se propone un metodo para manejar inputs seguros del usuario
+        utilizando la funcion getline_stdin, la cual se encarga de leer la
+        entrada del usuario de manera segura y manejar los errores de memoria
+        que puedan surgir durante la ejecucion de la funcion.
 
     */
     return 0;
