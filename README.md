@@ -1,6 +1,6 @@
 # Proposal for Result Type in Standard C
 
-This is a proposal to implement the type result in the language C standard, whose purpose is to grant a safe way to handle results produced by fucnions.
+This is a proposal to implement the type result in the language C standard, whose purpose is to grant a safe way to handle results produced by functions.
 
 The main characteristic is that when using this type, the result is automatically released from the memory when leaving the context of the function where an instance is believed.
 
