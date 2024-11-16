@@ -34,7 +34,7 @@ void cleanup(void* ptr) {
 }
 
 // Define the macro CLEANUP_RESULT
-#define RESULT_AUTO_CLEANED(value) __attribute__((cleanup(cleanup_result))) Result value
+#define RESULT(value) __attribute__((cleanup(cleanup_result))) Result value
 
 // Function to read the user's input safely
 Result getline_stdin() {
@@ -86,7 +86,7 @@ Result answer_user_input(const char* question) {
 
 // Function to say hello to the developer
 Result say_hello_to_dev() {
-    RESULT_AUTO_CLEANED(name) = answer_user_input("What is your name, bro? it's just a test: "); 
+    RESULT(name) = answer_user_input("What is your name, bro? it's just a test: "); 
     switch (name.type) {
         case OK:
             return say_hello((char*)name.value);
@@ -116,7 +116,7 @@ int main() {
     //  Variable to store the result value
     int resultValue = 0;
     // Use of the result value outside the IF and Switch
-    RESULT_AUTO_CLEANED(result) = secure_division(10, 2);
+    RESULT(result) = secure_division(10, 2);
     // handle the result with an IF
     if (result.type == OK) {
         int value = *(int*)result.value;
@@ -148,7 +148,7 @@ int main() {
     // Variable to store the result value
     char* result2Value = NULL;
     // Use of the result value outside the IF and Switch
-    RESULT_AUTO_CLEANED(result2) = say_hello("Manuel");
+    RESULT(result2) = say_hello("Manuel");
 
     // handle the result with an IF
     if (result2.type == OK) {
@@ -179,7 +179,7 @@ int main() {
     }
 
     // Using a safe input function to get the user's name
-    RESULT_AUTO_CLEANED(answer) = answer_user_input("What is your name? ");
+    RESULT(answer) = answer_user_input("What is your name? ");
     
     // handle the result with a Switch
     switch (answer.type) {
@@ -195,7 +195,7 @@ int main() {
 
     }
 
-    RESULT_AUTO_CLEANED(hello_dev) = say_hello_to_dev();
+    RESULT(hello_dev) = say_hello_to_dev();
 
     switch (hello_dev.type) {
         case OK: {
@@ -213,15 +213,15 @@ int main() {
 
     /*
 
-        The use of the macro RESULT_AUTO_CLEANED is proposed to facilitate,   
+        The use of the macro RESULT is proposed to facilitate,   
         when leaving the Main function, the variables declared with 
-        the macro RESULT_AUTO_CLEANED are automatically cleaned.
+        the macro RESULT are automatically cleaned.
         Therefore, it is not necessary to call the Cleanup_Result
         to release the memory assigned to the leaders of the result.
         
         The same behavior would happen if variables are declared within 
         other functions,that is, when leaving the function, the variables 
-        declared with the Macro RESULT_AUTO_CLEANED, they are cleaned 
+        declared with the Macro RESULT, they are cleaned 
         automatically.
 
         In addition, a method to handle inputs insurance user is proposed
